@@ -393,6 +393,13 @@ input, select, textarea, button { font-family: inherit; }
   cursor: pointer; transition: all 0.3s; font-size: 0.9rem;
 }
 .btn-logout:hover { background: rgba(239,68,68,0.2); transform: scale(1.05); }
+.btn-change-pw {
+  background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.15);
+  color: var(--orange); padding: 8px 12px; border-radius: 10px;
+  cursor: pointer; transition: all 0.3s; font-size: 0.9rem;
+  display: flex; align-items: center;
+}
+.btn-change-pw:hover { background: rgba(245,158,11,0.2); transform: scale(1.05); }
 
 /* ═══════════════════════════════════════════════════════
    DASHBOARD CONTENT
