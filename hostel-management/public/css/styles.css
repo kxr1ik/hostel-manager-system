@@ -368,16 +368,7 @@ input, select, textarea, button { font-family: inherit; }
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 .nav-subtitle { font-size: 0.65rem; color: var(--text3); letter-spacing: 0.5px; font-weight: 500; }
-.nav-center { flex: 1; display: flex; justify-content: center; }
-.nav-role-display {
-  padding: 8px 24px; border-radius: 20px; font-size: 0.9rem; font-weight: 700;
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  color: #fff; display: flex; align-items: center; gap: 8px;
-  box-shadow: 0 4px 16px rgba(59,130,246,0.4);
-  min-width: 120px; justify-content: center;
-}
-.nav-role-display i { font-size: 0.9rem; }
-.nav-tabs { flex: 0; display: flex; gap: 4px; }
+.nav-tabs { flex: 1; display: flex; gap: 4px; justify-content: center; }
 .nav-tab {
   padding: 8px 20px; border: none; background: transparent; color: var(--text3);
   font-weight: 600; font-size: 0.88rem; cursor: pointer; border-radius: 20px;
@@ -395,13 +386,7 @@ input, select, textarea, button { font-family: inherit; }
 .nav-tab.active { color: #fff; box-shadow: 0 4px 16px rgba(139,92,246,0.3); }
 .nav-tab i { position: relative; z-index: 1; }
 .nav-right { display: flex; align-items: center; gap: 12px; }
-.nav-user-info-wrap { font-size: 0.85rem; color: var(--text2); font-weight: 500; display: flex; align-items: center; }
-.nav-role-badge {
-  padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 700;
-  background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(59,130,246,0.15));
-  border: 1px solid rgba(139,92,246,0.2); color: #c4b5fd;
-  display: inline-flex; align-items: center; gap: 6px;
-}
+.nav-user-info-wrap { font-size: 0.85rem; color: var(--text2); font-weight: 500; }
 .btn-logout {
   background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.15);
   color: var(--red); padding: 8px 12px; border-radius: 10px;
@@ -825,5 +810,4 @@ input, select, textarea, button { font-family: inherit; }
   .dash-content { padding: 12px; }
   .status-card { padding: 24px; }
   .status-card .sc-label { font-size: 1.5rem; }
-  .nav-role-display { min-width: 100px; padding: 6px 16px; font-size: 0.8rem; }
 }
