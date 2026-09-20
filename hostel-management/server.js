@@ -617,10 +617,11 @@ app.post('/api/auth/register', upload.single('photo'), (req, res) => {
     const passwordHash = bcrypt.hashSync(password, 10);
 
     const insertStudent = db.transaction(() => {
-      const result = db.prepare(`
+      const stmt = db.prepare(`
         INSERT INTO students (photo_url, name, enrollment_no, phone, branch, section, blood_group, parent_name, parent_phone, hostel_name, room_no, floor, password_hash, current_status)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OUTSIDE_CAMPUS')
-      `).run(photoUrl, name.trim(), enrollment_no.trim(), phone, branch, section, blood_group || '', parent_name.trim(), parent_phone, hostel_name, room_no, floor);
+      `);
+      const result = stmt.run(photoUrl, name.trim(), enrollment_no.trim(), phone, branch, section, blood_group || '', parent_name.trim(), parent_phone, hostel_name, room_no, floor, passwordHash);
       const sid = result.lastInsertRowid;
       db.prepare("INSERT INTO users (username, password_hash, role, student_id) VALUES (?, ?, 'STUDENT', ?)")
         .run(enrollment_no.trim().toLowerCase(), passwordHash, sid);
@@ -631,6 +632,7 @@ app.post('/api/auth/register', upload.single('photo'), (req, res) => {
     res.json({ success: true, message: 'Account created successfully. Please login.' });
   } catch (err) {
     log.error(`Registration error: ${err.message}`);
+    log.error(`Stack: ${err.stack}`);
     res.status(500).json({ error: 'Registration failed. Please try again.' });
   }
 });
@@ -1037,6 +1039,24 @@ app.post('/api/attendance/warden/mark-all', authMiddleware, requireRole('WARDEN'
     log.error(`Warden mark all attendance error: ${err.message}`);
     res.status(500).json({ error: 'Failed to mark attendance for all students' });
   }
+});
+
+// ── Password Change ─────────────────────────────────────────────
+app.put('/api/auth/change-password', authMiddleware, (req, res) => {
+  const { current_password, new_password } = req.body;
+  if (!current_password || !new_password) return res.status(400).json({ error: 'Current password and new password are required.' });
+  if (new_password.length < 6) return res.status(400).json({ error: 'New password must be at least 6 characters.' });
+  
+  const user = db.prepare("SELECT * FROM users WHERE id = ?").get(req.user.id);
+  if (!user) return res.status(404).json({ error: 'User not found.' });
+  
+  if (!bcrypt.compareSync(current_password, user.password_hash)) return res.status(401).json({ error: 'Current password is incorrect.' });
+  
+  const newHash = bcrypt.hashSync(new_password, 10);
+  db.prepare("UPDATE users SET password_hash = ?, updated_at = datetime('now','localtime') WHERE id = ?").run(newHash, req.user.id);
+  
+  auditLog(req.user.id, user.username, user.role, 'CHANGE_PASSWORD', req.user.id, user.username, 'Password changed', 'SUCCESS', req.ip);
+  res.json({ success: true, message: 'Password changed successfully!' });
 });
 
 // ─── Socket.IO ───────────────────────────────────────────────────
