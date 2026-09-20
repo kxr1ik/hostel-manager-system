@@ -524,7 +524,9 @@ app.post('/api/qr/verify', authMiddleware, requireRole('GET_PASS'), (req, res) =
     }
 
     const dateStr = now.toISOString().split('T')[0];
-    const timeStr = now.toTimeString().substring(0, 5);
+    const hours = now.getUTCHours().toString().padStart(2, '0');
+    const minutes = now.getUTCMinutes().toString().padStart(2, '0');
+    const timeStr = `${hours}:${minutes}`;
     const timestamp = `${dateStr} ${timeStr}`;
 
     let outsideDuration = '';
