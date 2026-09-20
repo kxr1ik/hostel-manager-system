@@ -536,9 +536,9 @@ app.post('/api/qr/verify', authMiddleware, requireRole('GET_PASS'), (req, res) =
           .run(newStatus, timestamp, timestamp, student.id);
       } else {
         if (student.last_checkout) {
-          const checkoutTime = new Date(student.last_checkout.replace(' ', 'T'));
-          const diffMs = now - checkoutTime;
-          const totalMinutes = Math.floor(diffMs / 60000);
+          const checkoutTime = new Date(student.last_checkout.replace(' ', 'T') + '+05:30');
+          const diffMs = now.getTime() - checkoutTime.getTime();
+          const totalMinutes = Math.max(0, Math.floor(diffMs / 60000));
           const hours = Math.floor(totalMinutes / 60);
           const minutes = totalMinutes % 60;
           outsideDuration = hours > 0 ? `${hours} Hour${hours > 1 ? 's' : ''} ${minutes} Minute${minutes !== 1 ? 's' : ''}` : `${minutes} Minute${minutes !== 1 ? 's' : ''}`;
