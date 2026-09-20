@@ -288,9 +288,9 @@ function seedData() {
   if (studentCount.cnt === 0) {
     const students = [
       { name: 'Rahul Sharma', enrollment: '22CS101', phone: '9876543210', branch: 'CSE', section: 'A', blood: 'B+', parent: 'Rajesh Sharma', parentPhone: '9876543200', hostel: 'Boys Hostel', room: '204', floor: '2', status: 'IN_CAMPUS' },
-      { name: 'Aman Kumar', enrollment: '22CS115', phone: '9876543211', branch: 'CSE', section: 'B', blood: 'O+', parent: 'Suresh Kumar', parentPhone: '9876543201', hostel: 'Boys Hostel', room: '312', floor: '3', status: 'OUTSIDE_CAMPUS' },
+      { name: 'Aman Kumar', enrollment: '22CS115', phone: '9876543211', branch: 'CSE', section: 'B', blood: 'O+', parent: 'Suresh Kumar', parentPhone: '9876543201', hostel: 'Boys Hostel', room: '312', floor: '3', status: 'IN_CAMPUS' },
       { name: 'Priya Patel', enrollment: '22CS120', phone: '9876543212', branch: 'CSE', section: 'A', blood: 'A+', parent: 'Mahesh Patel', parentPhone: '9876543202', hostel: 'Girls Hostel', room: '105', floor: '1', status: 'IN_CAMPUS' },
-      { name: 'Sneha Verma', enrollment: '22EC108', phone: '9876543213', branch: 'ECE', section: 'A', blood: 'AB+', parent: 'Ramesh Verma', parentPhone: '9876543203', hostel: 'Girls Hostel', room: '201', floor: '2', status: 'OUTSIDE_CAMPUS' },
+      { name: 'Sneha Verma', enrollment: '22EC108', phone: '9876543213', branch: 'ECE', section: 'A', blood: 'AB+', parent: 'Ramesh Verma', parentPhone: '9876543203', hostel: 'Girls Hostel', room: '201', floor: '2', status: 'IN_CAMPUS' },
       { name: 'Vikram Singh', enrollment: '22ME130', phone: '9876543214', branch: 'ME', section: 'A', blood: 'B-', parent: 'Hari Singh', parentPhone: '9876543204', hostel: 'Boys Hostel', room: '118', floor: '1', status: 'IN_CAMPUS' },
     ];
 
@@ -619,7 +619,7 @@ app.post('/api/auth/register', upload.single('photo'), (req, res) => {
     const insertStudent = db.transaction(() => {
       const stmt = db.prepare(`
         INSERT INTO students (photo_url, name, enrollment_no, phone, branch, section, blood_group, parent_name, parent_phone, hostel_name, room_no, floor, password_hash, current_status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OUTSIDE_CAMPUS')
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'IN_CAMPUS')
       `);
       const result = stmt.run(photoUrl, name.trim(), enrollment_no.trim(), phone, branch, section, blood_group || '', parent_name.trim(), parent_phone, hostel_name, room_no, floor, passwordHash);
       const sid = result.lastInsertRowid;
@@ -654,7 +654,7 @@ app.post('/api/warden/students', authMiddleware, requireRole('WARDEN'), (req, re
     const insertTx = db.transaction(() => {
       const result = db.prepare(`
         INSERT INTO students (photo_url, name, enrollment_no, phone, branch, section, blood_group, parent_name, parent_phone, hostel_name, room_no, floor, password_hash, current_status)
-        VALUES ('', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OUTSIDE_CAMPUS')
+        VALUES ('', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'IN_CAMPUS')
       `).run(name.trim(), enrollment_no.trim(), phone, branch, section, blood_group || '', parent_name.trim(), parent_phone, hostel_name, room_no, floor);
       const sid = result.lastInsertRowid;
       db.prepare("INSERT INTO users (username, password_hash, role, student_id) VALUES (?, ?, 'STUDENT', ?)")
