@@ -502,32 +502,11 @@ app.post('/api/qr/verify', authMiddleware, requireRole('GET_PASS'), (req, res) =
     if (qrToken.status !== 'active') return res.status(400).json({ error: 'QR code expired. Please scan the student\'s latest QR code.' });
 
     const now = new Date();
-    const expiresAt = new Date(qrToken.expires_at);
-    if (now > expiresAt) {
-      db.prepare("UPDATE qr_tokens SET status = 'expired' WHERE id = ?").run(qrToken.id);
-      return res.status(400).json({ error: 'QR code expired. Please scan the student\'s latest QR code.' });
-    }
-
-    const student = db.prepare("SELECT * FROM students WHERE id = ? AND is_active = 1").get(qrToken.student_id);
-    if (!student) return res.status(404).json({ error: 'Student record not found.' });
-
-    db.prepare("UPDATE qr_tokens SET status = 'used', used_at = ? WHERE id = ?").run(now.toISOString(), qrToken.id);
-
-    const currentStatus = student.current_status;
-    let newStatus, eventType;
-    if (currentStatus === 'IN_CAMPUS') {
-      newStatus = 'OUTSIDE_CAMPUS';
-      eventType = 'CHECK_OUT';
-    } else {
-      newStatus = 'IN_CAMPUS';
-      eventType = 'CHECK_IN';
-    }
-
-    const dateStr = now.toISOString().split('T')[0];
-    const hours = now.getUTCHours().toString().padStart(2, '0');
-    const minutes = now.getUTCMinutes().toString().padStart(2, '0');
-    const timeStr = `${hours}:${minutes}`;
-    const timestamp = `${dateStr} ${timeStr}`;
+    const localDate = now.toLocaleString('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' }).split(', ')[0];
+    const localTime = now.toLocaleString('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false });
+    const dateStr = localDate;
+    const timeStr = localTime;
+    const timestamp = `${localDate} ${localTime}`;
 
     let outsideDuration = '';
     const updateTransaction = db.transaction(() => {
