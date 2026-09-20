@@ -158,6 +158,44 @@ function doLogout() {
   toast('Logged out', 'info');
 }
 
+// ─── Change Password ───────────────────────────────────────────
+function showChangePassword() {
+  document.getElementById('modal-box').innerHTML = `
+    <h2><i class="fas fa-key" style="color:var(--orange);"></i> Change Password</h2>
+    <form onsubmit="changePassword(event)">
+      <div class="fg"><label>Current Password</label><input type="password" id="cp-current" required placeholder="Enter current password"></div>
+      <div class="fg"><label>New Password</label><input type="password" id="cp-new" required minlength="6" placeholder="Min 6 characters"></div>
+      <div class="fg"><label>Confirm New Password</label><input type="password" id="cp-confirm" required minlength="6" placeholder="Re-enter new password"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn-action" style="background:var(--glass);border:1px solid var(--glass-border);" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn-action btn-orange"><i class="fas fa-check"></i> Change Password</button>
+      </div>
+    </form>`;
+  openModal();
+}
+
+async function changePassword(e) {
+  e.preventDefault();
+  const currentPw = document.getElementById('cp-current').value;
+  const newPw = document.getElementById('cp-new').value;
+  const confirmPw = document.getElementById('cp-confirm').value;
+  
+  if (newPw !== confirmPw) return toast('New passwords do not match', 'error');
+  if (newPw.length < 6) return toast('Password must be at least 6 characters', 'error');
+  if (newPw === currentPw) return toast('New password must be different from current', 'error');
+  
+  try {
+    await api('/api/auth/change-password', {
+      method: 'PUT',
+      body: JSON.stringify({ current_password: currentPw, new_password: newPw })
+    });
+    closeModal();
+    toast('Password changed successfully! ✓', 'success');
+  } catch (err) {
+    toast(err.message || 'Failed to change password', 'error');
+  }
+}
+
 // ─── Enter Dashboard ─────────────────────────────────────────
 function enterDashboard() {
   showView('view-dashboard');
@@ -169,6 +207,10 @@ function enterDashboard() {
 
   // User info — hidden (don't show logged-in user name on dashboard)
   document.getElementById('nav-user-info').innerHTML = '';
+
+  // Show change password button for Warden and Gate Pass
+  const btnChangePw = document.getElementById('btn-change-pw');
+  if (btnChangePw) btnChangePw.style.display = (role === 'WARDEN' || role === 'GET_PASS') ? 'flex' : 'none';
 
   // Set active tab
   if (role === 'STUDENT') switchTab('student');
