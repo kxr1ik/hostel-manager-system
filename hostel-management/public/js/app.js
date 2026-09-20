@@ -205,14 +205,8 @@ function enterDashboard() {
   document.getElementById('tab-gate').style.display = role === 'GET_PASS' ? 'flex' : 'none';
   document.getElementById('tab-warden').style.display = role === 'WARDEN' ? 'flex' : 'none';
 
-  // Show role name in center nav box
-  const roleInfo = {
-    'STUDENT': { icon: 'fa-graduation-cap', label: 'Student' },
-    'WARDEN': { icon: 'fa-user-shield', label: 'Warden' },
-    'GET_PASS': { icon: 'fa-id-badge', label: 'Gate Pass' }
-  };
-  const ri = roleInfo[role] || { icon: 'fa-user', label: role };
-  document.getElementById('nav-role-display').innerHTML = `<i class="fas ${ri.icon}"></i> ${ri.label}`;
+  // User info hidden
+  document.getElementById('nav-user-info').innerHTML = '';
 
   // Show change password button for Warden and Gate Pass
   const btnChangePw = document.getElementById('btn-change-pw');
