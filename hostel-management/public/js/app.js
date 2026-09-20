@@ -207,9 +207,9 @@ function enterDashboard() {
 
   // Show role in center blue box
   const roleInfo = {
-    'STUDENT': { icon: 'fa-graduation-cap', label: 'Student Account' },
-    'WARDEN': { icon: 'fa-user-shield', label: 'Warden Account' },
-    'GET_PASS': { icon: 'fa-id-badge', label: 'Gate Pass Account' }
+    'STUDENT': { icon: 'fa-graduation-cap', label: 'Student' },
+    'WARDEN': { icon: 'fa-user-shield', label: 'Warden' },
+    'GET_PASS': { icon: 'fa-id-badge', label: 'Gate Pass' }
   };
   const ri = roleInfo[role] || { icon: 'fa-user', label: role };
   document.getElementById('nav-role-box').innerHTML = `<i class="fas ${ri.icon}"></i> ${ri.label}`;
@@ -1103,8 +1103,7 @@ async function updateAttendanceTime() {
     });
     toast(`Attendance window set to ${startTime} - ${endTime}`, 'success');
     // Reload student attendance if active
-    if
-       (S.activeTab === 'student') loadStudentAttendance();
+    if (S.activeTab === 'student') loadStudentAttendance();
   } catch (err) {
     toast(err.message || 'Failed to update time', 'error');
   }
@@ -1121,3 +1120,4 @@ async function updateAttendanceTime() {
     showView('view-login');
   }
 })();
+
