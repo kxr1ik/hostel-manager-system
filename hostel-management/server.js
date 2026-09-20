@@ -530,7 +530,7 @@ app.post('/api/qr/verify', authMiddleware, requireRole('GET_PASS'), (req, res) =
     let outsideDuration = '';
     const updateTransaction = db.transaction(() => {
       if (eventType === 'CHECK_OUT') {
-        db.prepare("UPDATE students SET current_status = ?, last_checkout = ?, updated_at = ? WHERE id = ?")
+        db.prepare("UPDATE students SET current_status = ?, last_checkout = ?, last_outside_duration = '', updated_at = ? WHERE id = ?")
           .run(newStatus, timestamp, timestamp, student.id);
       } else {
         if (student.last_checkout) {
