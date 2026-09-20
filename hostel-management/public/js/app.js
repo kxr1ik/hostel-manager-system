@@ -205,6 +205,15 @@ function enterDashboard() {
   document.getElementById('tab-gate').style.display = role === 'GET_PASS' ? 'flex' : 'none';
   document.getElementById('tab-warden').style.display = role === 'WARDEN' ? 'flex' : 'none';
 
+  // Show role in center blue box
+  const roleInfo = {
+    'STUDENT': { icon: 'fa-graduation-cap', label: 'Student Account' },
+    'WARDEN': { icon: 'fa-user-shield', label: 'Warden Account' },
+    'GET_PASS': { icon: 'fa-id-badge', label: 'Gate Pass Account' }
+  };
+  const ri = roleInfo[role] || { icon: 'fa-user', label: role };
+  document.getElementById('nav-role-box').innerHTML = `<i class="fas ${ri.icon}"></i> ${ri.label}`;
+
   // User info hidden
   document.getElementById('nav-user-info').innerHTML = '';
 
@@ -1094,7 +1103,8 @@ async function updateAttendanceTime() {
     });
     toast(`Attendance window set to ${startTime} - ${endTime}`, 'success');
     // Reload student attendance if active
-    if (S.activeTab === 'student') loadStudentAttendance();
+    if
+       (S.activeTab === 'student') loadStudentAttendance();
   } catch (err) {
     toast(err.message || 'Failed to update time', 'error');
   }
