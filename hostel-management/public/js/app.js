@@ -201,9 +201,9 @@ function enterDashboard() {
   showView('view-dashboard');
   const role = S.user.role;
   // Show relevant tabs
-  document.getElementById('tab-student').style.display = 'none';
-  document.getElementById('tab-gate').style.display =  'none';
-  document.getElementById('tab-warden').style.display = 'none';
+  document.getElementById('tab-student').style.display = role === 'STUDENT' ? 'flex' : 'none';
+  document.getElementById('tab-gate').style.display = role === 'GET_PASS' ? 'flex' : 'none';
+  document.getElementById('tab-warden').style.display = role === 'WARDEN' ? 'flex' : 'none';
 
   // Show role in center blue box
   const roleInfo = {
@@ -269,13 +269,13 @@ function handleRealtimeUpdate(data) {
   const action = isCheckIn ? 'Checked In' : 'Checked Out';
   const durMsg = isCheckIn && outside_duration ? ` | ⏱ ${outside_duration}` : '';
 
-  toast(`${emoji} ${name} — ${action}${durMsg}`, isCheckIn ? 'success' : 'warning');
-
-  // Skip refresh if we just scanned (the scan handler already refreshes)
+  // Skip toast and refresh if we just scanned (the scan handler already handles it)
   if (S.justScanned) {
     S.justScanned = false;
     return;
   }
+
+  toast(`${emoji} ${name} — ${action}${durMsg}`, isCheckIn ? 'success' : 'warning');
 
   // Refresh panels (with small delay to let DB save)
   setTimeout(() => {
@@ -339,9 +339,10 @@ function startDurationTimer(checkout) {
   function update() {
     const el = document.getElementById('dur-val');
     if (!el) { clearInterval(S.durationTimer); return; }
-    if (!checkout) { el.textContent = 'N/A'; return; }
-    const co = new Date(checkout.replace(' ', 'T'));
-    const diff = Math.floor((Date.now() - co.getTime()) / 60000);
+    if (!checkout) { el.textContent = '0m'; return; }
+    const coDate = new Date(checkout.replace(' ', 'T') + ':00+05:30');
+    const diff = Math.floor((Date.now() - coDate.getTime()) / 60000);
+    if (diff < 0) { el.textContent = '0m'; return; }
     const h = Math.floor(diff / 60), m = diff % 60;
     el.textContent = h > 0 ? `${h}h ${m}m` : `${m}m`;
   }
@@ -876,12 +877,15 @@ function fmtTime(t) {
   } catch { return t; }
 }
 function calcDur(co) {
-  if (!co) return 'N/A';
+  if (!co) return '0m';
   try {
-    const diff = Math.floor((Date.now() - new Date(co.replace(' ','T')).getTime()) / 60000);
+    // Parse as IST time by appending timezone offset
+    const coDate = new Date(co.replace(' ', 'T') + ':00+05:30');
+    const diff = Math.floor((Date.now() - coDate.getTime()) / 60000);
+    if (diff < 0) return '0m';
     const h = Math.floor(diff/60), m = diff%60;
     return h > 0 ? `${h}h ${m}m` : `${m}m`;
-  } catch { return 'N/A'; }
+  } catch { return '0m'; }
 }
 
 function handleAttendanceUpdate(data) {
