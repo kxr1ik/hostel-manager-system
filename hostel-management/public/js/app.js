@@ -205,8 +205,9 @@ function enterDashboard() {
   document.getElementById('tab-gate').style.display = role === 'GET_PASS' ? 'flex' : 'none';
   document.getElementById('tab-warden').style.display = role === 'WARDEN' ? 'flex' : 'none';
 
-  // User info — hidden (don't show logged-in user name on dashboard)
-  document.getElementById('nav-user-info').innerHTML = '';
+  // Show role name in nav bar
+  const roleNames = { 'STUDENT': '🎓 Student', 'WARDEN': '🛡️ Warden', 'GET_PASS': '🎫 Gate Pass' };
+  document.getElementById('nav-user-info').innerHTML = `<span class="nav-role-badge">${roleNames[role] || role}</span>`;
 
   // Show change password button for Warden and Gate Pass
   const btnChangePw = document.getElementById('btn-change-pw');
@@ -671,7 +672,7 @@ function showAddStudent() {
     <form onsubmit="addStudent(event)">
       <div class="fg-row"><div class="fg"><label>Name *</label><input id="a-name" required></div><div class="fg"><label>Enrollment *</label><input id="a-enroll" required></div></div>
       <div class="fg-row"><div class="fg"><label>Phone *</label><input id="a-phone" required pattern="[0-9]{10}"></div><div class="fg"><label>Blood Group</label><select id="a-blood"><option value="">-</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>O+</option><option>O-</option><option>AB+</option><option>AB-</option></select></div></div>
-      <div class="fg-row"><div class="fg"><label>Branch *</label><select id="a-branch" required><option value="">-</option><option>CSE</option><option>ECE</option><option>ME</option><option>CE</option><option>EE</option><option>IT</option></select></div><div class="fg"><label>Section *</label><select id="a-section" required><option value="">-</option><option>A</option><option>B</option><option>C</option></select></div></div>
+      <div class="fg-row"><div class="fg"><label>Branch *</label><select id="a-branch" required><option value="">-</option><option>CSE</option><option>ECE</option><option>ME</option><option>CE</option><option>EE</option><option>IT</option><option>CY</option></select></div><div class="fg"><label>Section *</label><select id="a-section" required><option value="">-</option><option>A</option><option>B</option><option>C</option></select></div></div>
       <div class="fg-row"><div class="fg"><label>Parent Name *</label><input id="a-pname" required></div><div class="fg"><label>Parent Phone *</label><input id="a-pphone" required pattern="[0-9]{10}"></div></div>
       <div class="fg-row"><div class="fg"><label>Hostel *</label><select id="a-hostel" required><option value="">-</option><option>Boys Hostel</option><option>Girls Hostel</option></select></div><div class="fg"><label>Room *</label><input id="a-room" required></div></div>
       <div class="fg-row"><div class="fg"><label>Floor *</label><select id="a-floor" required><option value="">-</option><option>Ground</option><option>1</option><option>2</option><option>3</option></select></div><div class="fg"><label>Password *</label><input type="password" id="a-pass" required minlength="6"></div></div>
@@ -773,7 +774,7 @@ async function editStudent(id) {
       <h2><i class="fas fa-edit" style="color:var(--orange);"></i> Edit ${s.name}</h2>
       <form onsubmit="saveStudent(event,${id})">
         <div class="fg-row"><div class="fg"><label>Name</label><input id="e-name" value="${s.name}" required></div><div class="fg"><label>Phone</label><input id="e-phone" value="${s.phone}" required></div></div>
-        <div class="fg-row"><div class="fg"><label>Branch</label><select id="e-branch">${['CSE','ECE','ME','CE','EE','IT'].map(b=>`<option ${s.branch===b?'selected':''}>${b}</option>`).join('')}</select></div><div class="fg"><label>Section</label><select id="e-section">${['A','B','C','D'].map(x=>`<option ${s.section===x?'selected':''}>${x}</option>`).join('')}</select></div></div>
+        <div class="fg-row"><div class="fg"><label>Branch</label><select id="e-branch">${['CSE','ECE','ME','CE','EE','IT','CY'].map(b=>`<option ${s.branch===b?'selected':''}>${b}</option>`).join('')}</select></div><div class="fg"><label>Section</label><select id="e-section">${['A','B','C','D'].map(x=>`<option ${s.section===x?'selected':''}>${x}</option>`).join('')}</select></div></div>
         <div class="fg-row"><div class="fg"><label>Parent</label><input id="e-pname" value="${s.parent_name}" required></div><div class="fg"><label>Parent Ph.</label><input id="e-pphone" value="${s.parent_phone}" required></div></div>
         <div class="fg-row"><div class="fg"><label>Hostel</label><select id="e-hostel">${['Boys Hostel','Girls Hostel'].map(h=>`<option ${s.hostel_name===h?'selected':''}>${h}</option>`).join('')}</select></div><div class="fg"><label>Room</label><input id="e-room" value="${s.room_no}" required></div></div>
         <div class="fg-row"><div class="fg"><label>Floor</label><select id="e-floor">${['Ground','1','2','3','4'].map(f=>`<option ${s.floor===f?'selected':''}>${f}</option>`).join('')}</select></div><div class="fg"><label>New Password</label><input type="password" id="e-pass" placeholder="Leave blank"></div></div>
