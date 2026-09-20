@@ -201,8 +201,8 @@ function enterDashboard() {
   showView('view-dashboard');
   const role = S.user.role;
   // Show relevant tabs
-  document.getElementById('tab-student').style.display = role === 'STUDENT' ? 'flex' : 'none';
-  document.getElementById('tab-gate').style.display = role === 'GET_PASS' ? 'flex' : 'none';
+  document.getElementById('tab-student').style.display = 'none';
+  document.getElementById('tab-gate').style.display =  'none';
   document.getElementById('tab-warden').style.display = 'none';
 
   // Show role in center blue box
