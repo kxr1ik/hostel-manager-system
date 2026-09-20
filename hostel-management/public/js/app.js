@@ -201,9 +201,9 @@ function enterDashboard() {
   showView('view-dashboard');
   const role = S.user.role;
   // Show relevant tabs
-  document.getElementById('tab-student').style.display = role === 'STUDENT' ? 'flex' : 'none';
-  document.getElementById('tab-gate').style.display = role === 'GET_PASS' ? 'flex' : 'none';
-  document.getElementById('tab-warden').style.display = role === 'WARDEN' ? 'flex' : 'none';
+  document.getElementById('tab-student').style.display = 'none';
+  document.getElementById('tab-gate').style.display = 'none';
+  document.getElementById('tab-warden').style.display = 'none';
 
   // Show role in center blue box
   const roleInfo = {
@@ -347,7 +347,7 @@ function startDurationTimer(checkout) {
     el.textContent = h > 0 ? `${h}h ${m}m` : `${m}m`;
   }
   update();
-  S.durationTimer = setInterval(update, 30000);
+  S.durationTimer = setInterval(update, 10000);
 }
 
 function renderStudentProfile(me) {
@@ -624,7 +624,7 @@ function renderWardenMonitoring(data) {
     document.querySelectorAll('[data-co]').forEach(el => {
       el.innerHTML = `⏱ ${calcDur(el.dataset.co)}`;
     });
-  }, 60000);
+  }, 10000);
 }
 
 async function loadWardenStudents() {
