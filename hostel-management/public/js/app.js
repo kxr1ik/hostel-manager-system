@@ -203,7 +203,7 @@ function enterDashboard() {
   // Show relevant tabs
   document.getElementById('tab-student').style.display = role === 'STUDENT' ? 'flex' : 'none';
   document.getElementById('tab-gate').style.display = role === 'GET_PASS' ? 'flex' : 'none';
-  document.getElementById('tab-warden').style.display = role === 'WARDEN' ? 'flex' : 'none';
+  document.getElementById('tab-warden').style.display = 'none';
 
   // Show role in center blue box
   const roleInfo = {
@@ -1120,4 +1120,3 @@ async function updateAttendanceTime() {
     showView('view-login');
   }
 })();
-
