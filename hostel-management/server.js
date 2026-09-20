@@ -508,6 +508,27 @@ app.post('/api/qr/verify', authMiddleware, requireRole('GET_PASS'), (req, res) =
     const timeStr = localTime;
     const timestamp = `${localDate} ${localTime}`;
 
+    const expiresAt = new Date(qrToken.expires_at);
+    if (now > expiresAt) {
+      db.prepare("UPDATE qr_tokens SET status = 'expired' WHERE id = ?").run(qrToken.id);
+      return res.status(400).json({ error: 'QR code expired. Please scan the student\'s latest QR code.' });
+    }
+
+    const student = db.prepare("SELECT * FROM students WHERE id = ? AND is_active = 1").get(qrToken.student_id);
+    if (!student) return res.status(404).json({ error: 'Student record not found.' });
+
+    db.prepare("UPDATE qr_tokens SET status = 'used', used_at = ? WHERE id = ?").run(now.toISOString(), qrToken.id);
+
+    const currentStatus = student.current_status;
+    let newStatus, eventType;
+    if (currentStatus === 'IN_CAMPUS') {
+      newStatus = 'OUTSIDE_CAMPUS';
+      eventType = 'CHECK_OUT';
+    } else {
+      newStatus = 'IN_CAMPUS';
+      eventType = 'CHECK_IN';
+    }
+
     let outsideDuration = '';
     const updateTransaction = db.transaction(() => {
       if (eventType === 'CHECK_OUT') {
